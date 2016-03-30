@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.mapper.StudentMapper">
+    <!-- 基础映射只是映射表中的字段 -->
+    <resultMap type="com.shxt.model.Student" id="BaseResultMap">
+        <id property="student_id" column="student_id" />
+        <result property="student_name" column="student_name" />
+        <result property="fk_class_id" column="fk_class_id" />
+    </resultMap>
+    <resultMap type="com.shxt.model.Student" id="StudentMap" extends="BaseResultMap">
+        <association property="clazz" javaType="com.shxt.model.Clazz"
+        column="fk_class_id"
+        select="com.shxt.mapper.ClazzMapper.load"
+        ></association>
+    </resultMap>
+    <select id="load_mybatis" parameterType="int" resultMap="StudentMap">
+        select student_id,student_name,fk_class_id
+        from student
+        where student_id=#{id}
+    </select>
+   
+   <select id="load" parameterType="int" resultMap="BaseResultMap">
+    select student_id,student_name,fk_class_id
+    from student
+    where student_id=#{id}
+   </select>
+   
+   <select id="list" parameterType="int" resultMap="StudentMap">
+    select student_id,student_name,fk_class_id
+    from student
+   </select>
+   
+   <resultMap type="com.shxt.model.Student" id="StudentResultMap" extends="BaseResultMap">
+    <association property="clazz" javaType="com.shxt.model.Clazz">
+        <id property="class_id" column="class_id"/>
+        <result property="class_name" column="class_name"/>
+    </association>
+   </resultMap>
+   
+   <resultMap type="com.shxt.model.Student" id="StudentResultMap02" extends="BaseResultMap">
+    <association property="clazz" javaType="com.shxt.model.Clazz"
+    resultMap="com.shxt.mapper.ClazzMapper.BaseResultMap"
+    />
+   </resultMap>
+   
+   <select id="load_resultMap" parameterType="int" resultMap="StudentResultMap02">
+    select s.student_id,s.student_name,s.fk_class_id,c.class_id,c.class_name
+    from student s
+    left join
+    class c
+    on s.fk_class_id=c.class_id
+    where s.student_id=#{id}
+   </select>
+   
+  
+   
+   
+   
+
+</mapper>

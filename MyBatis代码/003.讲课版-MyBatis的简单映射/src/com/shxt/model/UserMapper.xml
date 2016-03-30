@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.mapper.UserMapper">
+    <!-- 该标签只是用于处理查询的结果集的映射 -->
+    <resultMap type="com.shxt.model.User" id="BaseResultMapper">
+        <id property="userId" javaType="java.lang.Integer"
+            column="user_id" jdbcType="INTEGER"
+        />
+        <result property="account" javaType="java.lang.String"
+            column="account" jdbcType="VARCHAR"
+        />
+        <result property="pwd" javaType="java.lang.String"
+            column="password" jdbcType="VARCHAR"
+        />
+        <result property="userName" javaType="java.lang.String"
+            column="user_name" jdbcType="VARCHAR"
+            typeHandler="com.shxt.type.MyStringTypeHandler"
+        />
+        <result property="status" javaType="java.lang.String"
+            column="status" jdbcType="VARCHAR"
+        />
+        <result property="start_date" javaType="java.util.Date"
+            column="start_date" jdbcType="VARCHAR"
+            typeHandler="com.shxt.type.MyDateTypeHandler"
+        />
+        <result property="end_date" javaType="java.util.Date"
+            column="end_date" jdbcType="VARCHAR"
+             typeHandler="com.shxt.type.MyDateTypeHandler"
+        />
+       
+    </resultMap>
+    <resultMap type="com.shxt.model.User" 
+    id="SimpleUserMapper" 
+    extends="BaseResultMapper">
+         <result property="param1" 
+         column="account_username" 
+         jdbcType="VARCHAR"/>
+         <result property="param2"
+            column="divdays"
+            typeHandler="com.shxt.type.DivDaysTypeHandler"
+         />
+    </resultMap>
+
+
+    <select id="load01" parameterType="int" resultMap="BaseResultMapper">
+        select * from sys_user
+        where user_id=#{user_id}
+    </select>
+    
+    <select id="load02" parameterType="int" resultMap="SimpleUserMapper">
+       select user_id,account,password,user_name,status, CONCAT(account,'_',user_name) account_username from sys_user
+        where user_id=#{user_id}
+    </select>
+    
+    <insert id="add" parameterType="com.shxt.model.User"
+        keyProperty="userId" useGeneratedKeys="true"
+    >
+        insert into sys_user
+        (account,password,user_name,start_date,end_date)
+        values
+        (#{account},
+        #{pwd},
+        #{userName,typeHandler=com.shxt.type.MyStringTypeHandler},#{start_date,typeHandler=com.shxt.type.MyDateTypeHandler},#{end_date,typeHandler=com.shxt.type.MyDateTypeHandler})
+    </insert>
+    
+    <select id="load03" parameterType="int" resultMap="SimpleUserMapper">
+        select user_id,account,password,user_name,status, CONCAT(account,'_',user_name) account_username,
+            start_date-end_date divdays
+        
+         from sys_user
+        where user_id=#{user_id}
+    
+    </select>
+  
+  
+</mapper>

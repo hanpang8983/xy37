@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.mapper.UserMapper">
+<!-- namespce要保持唯一 -->
+    <sql id="sys_user_column">
+        user_id userId,
+        account,
+        password pwd,
+        user_name userName,
+        status
+    </sql>
+
+  <!-- load一般情况通过主键进行获取对象 -->
+  <select id="load" parameterType="int" resultType="com.shxt.model.User">
+        select 
+            <include refid="sys_user_column"/>
+        from 
+            sys_user
+        where
+            user_id=#{user_id}
+  
+  </select>
+  
+  <!-- 查询用户状态和名称 -->
+  <select id="listByNameStatus01" parameterType="map" resultType="com.shxt.model.User">
+        select 
+            <include refid="sys_user_column"/>
+        from 
+            sys_user
+        where
+            user_name like concat(#{user_name},'%')
+            and
+            status=#{status}
+  </select>
+  
+  <select id="listByNameStatus02" resultType="com.shxt.model.User">
+        select 
+            <include refid="sys_user_column"/>
+        from 
+            sys_user
+        where
+            user_name like concat(#{param1},'%')
+            and
+            status=#{param2}
+  </select>
+  
+  <select id="listByNameStatus03" resultType="com.shxt.model.User">
+        select 
+            <include refid="sys_user_column"/>
+        from 
+            sys_user
+        where
+            user_name like concat(#{param1.user_name},'%')
+            and
+            status=#{param2.status}
+  </select>
+  
+  <!-- Where01 -->
+  <select id="where01" parameterType="map" resultType="com.shxt.model.User">
+        select 
+            <include refid="sys_user_column"/>
+        from 
+            sys_user
+        where 1=1
+            <if test="userName!=null and userName!=''">
+              and  user_name like concat(#{userName},'%')
+            </if>
+            <if test="status!=null and status!=''">
+              and    status=#{status}
+            </if>
+  </select>
+  <!-- Where02 -->
+  <select id="where02" parameterType="map" resultType="com.shxt.model.User">
+        select 
+            <include refid="sys_user_column"/>
+        from 
+            sys_user
+        <where>
+            <if test="userName!=null and userName!=''">
+              or user_name like concat(#{userName},'%')
+            </if>
+            <if test="status!=null and status!=''">
+              and    status=#{status}
+            </if>
+        </where>
+  </select>
+  
+  <!-- Where02 -->
+  <select id="where03" parameterType="map" resultType="com.shxt.model.User">
+        select 
+            <include refid="sys_user_column"/>
+        from 
+            sys_user
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test="userName!=null and userName!=''">
+              or user_name like concat(#{userName},'%')
+            </if>
+            <if test="status!=null and status!=''">
+              and    status=#{status}
+            </if>
+        </trim>
+  </select>
+  
+  <update id="update01" parameterType="com.shxt.model.User" >
+    update sys_user
+     <set>
+        <if test="account!=null">
+            account=#{account},
+        </if>
+        <if test="userName!=null">
+            user_name=#{userName},
+        </if>
+        <if test="pwd!=null">
+             password=#{pwd},
+        </if>
+     </set>
+    where
+        user_id=#{userId}
+  </update>
+  
+  <update id="update02" parameterType="com.shxt.model.User">
+    update sys_user
+     <trim prefix="SET " suffixOverrides=",">
+        <if test="account!=null">
+            account=#{account},
+        </if>
+        <if test="userName!=null">
+            user_name=#{userName},
+        </if>
+        <if test="pwd!=null">
+             password=#{pwd},
+        </if>
+     </trim>
+    where
+        user_id=#{userId}
+  
+  </update>
+  
+  <insert id="add" parameterType="com.shxt.model.User">
+  <!-- 2个trim标签 -->
+    insert into
+    (account,user_name,password)
+    values
+    (#{account},#{userName},#{pwd})
+  
+  </insert>
+  
+  <select id="listByIds01" parameterType="list" resultType="com.shxt.model.User">
+    select 
+    <include refid="sys_user_column"/>
+    from sys_user where user_id in 
+    <foreach collection="list" item="shxt" open="(" close=")" separator=",">
+        #{shxt}
+    </foreach>
+    
+  </select>
+  <!-- 数组方式 -->
+  <select id="listByIds02" resultType="com.shxt.model.User">
+    select 
+    <include refid="sys_user_column"/>
+    from sys_user where user_id in 
+    <foreach collection="array" item="shxt" open="(" close=")" separator=",">
+        #{shxt}
+    </foreach>
+    
+  </select>
+  
+  <insert id="batchUser" parameterType="list" >
+  
+  
+  </insert>
+  
+  
+</mapper>

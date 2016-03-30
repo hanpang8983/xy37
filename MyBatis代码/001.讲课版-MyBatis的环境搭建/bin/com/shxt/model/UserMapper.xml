@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="shxt.xy37">
+    <!-- 提取公共部分 -->
+    <sql id="sys_user_column">
+            user_id userId,
+            account,
+            password pwd,
+            user_name userName,
+            status 
+    </sql>
+    <!-- 添加语句 -->
+    <insert id="add" parameterType="com.shxt.model.User">
+        <!-- 定制SQL语句 -->
+        insert into
+            sys_user
+        <!-- 字段名称 -->
+        (account,password,user_name)
+        values
+        <!-- 类中的属性#{}形式 -->
+        (#{account},#{pwd},#{userName})
+    </insert>
+    <!-- 通过主键进行查询 -->
+    <select id="load" parameterType="int" resultType="com.shxt.model.User">
+        <!-- 解决方案一:当你的结果集中的字段跟类中的数据保持一致的时候，会自动完成赋值 -->
+        select 
+            <include refid="sys_user_column"/>
+        from sys_user where user_id=#{asdfdsafasdf}
+    </select>
+    <!-- 删除语句 -->
+    <delete id="delete" parameterType="int">
+        delete from 
+            sys_user
+        where
+            user_id=#{user_id}
+    </delete>
+    <!-- 获取所有用户信息 -->
+    <select id="list" resultType="com.shxt.model.User">
+        select 
+           <include refid="sys_user_column"/>
+        from sys_user
+    </select>
+    
+    <!-- 更新全部的信息 -->
+    <update id="update" parameterType="com.shxt.model.User">
+        update sys_user
+        set
+            account=#{account},
+            password=#{pwd},
+            user_name=#{userName},
+            status=#{status}
+        where user_id=#{userId}
+    </update>
+    
+    <select id="listByUserName01" parameterType="string" resultType="com.shxt.model.User">
+        select 
+            <include refid="sys_user_column"/>
+        from 
+            sys_user
+        where
+            user_name like #{user_name}
+    </select>
+    
+    <select id="listByUserName02" parameterType="string" resultType="com.shxt.model.User">
+        select 
+            <include refid="sys_user_column"/>
+        from 
+            sys_user
+        where
+            user_name like concat(#{user_name},'%')
+    </select>
+    
+    <select id="listByUserName03" parameterType="com.shxt.model.User" resultType="com.shxt.model.User">
+        select 
+            <include refid="sys_user_column"/>
+        from 
+            sys_user
+        where
+            user_name like ${userName}
+    </select>
+    
+    <select id="listByUserName04" parameterType="map" resultType="com.shxt.model.User">
+        select 
+            <include refid="sys_user_column"/>
+        from 
+            sys_user
+        where
+            user_name like #{xy37}
+    </select>
+    <!-- 请查询 姓名林 状态为 1的所有列表信息 -->
+    <select id="listByStatusName01" parameterType="map" resultType="com.shxt.model.User">
+        select 
+            <include refid="sys_user_column"/>
+        from 
+            sys_user
+        where
+            user_name like concat(#{shxt},'%')
+            and
+            status=#{status}
+    </select>
+    
+    <select id="listByStatusName02" parameterType="map" resultType="map">
+        select 
+            <include refid="sys_user_column"/>
+        from 
+            sys_user
+        where
+            user_name like concat(#{shxt},'%')
+            and
+            status=#{status}
+    </select>
+    
+    <!-- 请查询数据库中一共有多少条记录 -->
+    <select id="totalCount" resultType="int">
+        select count(user_id) from sys_user
+    </select>
+    
+    <!-- 请查询id的区间为 大于等于2小于等于10所有数据 -->
+    <select id="listByIds01" parameterType="map" resultType="com.shxt.model.User">
+        select <include refid="sys_user_column"/>
+        from sys_user
+        where user_id between #{id1} and #{id2}
+    </select>
+    <select id="listByIds02" parameterType="map" resultType="com.shxt.model.User">
+         select <include refid="sys_user_column"/>
+        from sys_user
+        where user_id &gt;= #{id1} and user_id &lt;= #{id2}
+    </select>
+    <!-- 请查询id的区间为 大于2小于10所有数据 -->
+    <select id="listByIds03" parameterType="map" resultType="com.shxt.model.User">
+        select <include refid="sys_user_column"/>
+        from sys_user
+        where user_id &gt; #{id1} and user_id &lt; #{id2}
+    </select>
+     <select id="listByIds04" parameterType="map" resultType="com.shxt.model.User">
+        <![CDATA[
+        select 
+            user_id userId,
+            account,
+            password pwd,
+            user_name userName,
+            status 
+        from sys_user
+        where user_id > #{id1} and user_id < #{id2}
+        ]]>
+        
+    </select>
+    
+</mapper>
