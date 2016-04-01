@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shxt.mapper.CourseMapper" >
+  <resultMap id="BaseResultMap" type="com.shxt.model.Course" >
+    <id column="course_id" property="course_id" jdbcType="INTEGER" />
+    <result column="course_name" property="course_name" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    course_id, course_name
+  </sql>
+  
+  <insert id="addList" >
+    insert into student_link_course
+    (fk_student_id,fk_course_id)
+    <!-- map=list.get(i) -->
+    <foreach collection="list" item="map" open="values " separator=",">
+        (#{map.student_id},#{map.course_id})
+    </foreach>
+  </insert>
+  
+  <insert id="addMap" parameterType="map">
+    insert into student_link_course
+    (fk_student_id,fk_course_id)
+    <foreach collection="coures" item="arr" open="values " separator=",">
+        (#{student_id},#{arr})
+    </foreach>
+  </insert>
+  
+  <insert id="addObject" parameterType="com.shxt.model.Student">
+    insert into student_link_course
+    (fk_student_id,fk_course_id)
+    <foreach collection="courseList" item="course" open="values " separator=",">
+        (#{student_id},#{course.course_id})
+    </foreach>
+  </insert>
+  
+</mapper>

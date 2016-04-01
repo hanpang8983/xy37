@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.mapper.ClazzMapper">
+    <!-- 基础映射只是映射表中的字段 -->
+    <resultMap type="com.shxt.model.Clazz" id="BaseResultMap">
+        <id property="class_id" column="class_id" />
+        <result property="class_name" column="class_name"/>
+    </resultMap>
+    
+   <!-- 通过主键获取班级的的信息 -->
+   <select id="load" parameterType="int" resultMap="BaseResultMap">
+   select class_id,class_name
+   from class
+   where class_id=#{class_id}
+   </select>
+   
+   <!-- SELECT方式 -->
+   <resultMap type="com.shxt.model.Clazz" id="ClazzSelectMap" extends="BaseResultMap">
+        <collection property="studentList" ofType="com.shxt.model.Student"
+        column="class_id"
+        select="com.shxt.mapper.StudentMapper.listStudentByClassId"
+        />
+   </resultMap>
+   <select id="load_select" parameterType="int" resultMap="ClazzSelectMap">
+   select class_id,class_name
+   from class
+   where class_id=#{class_id}
+   </select>
+   
+   <!-- 查询所有班级 -->
+   <select id="listAll" resultMap="ClazzSelectMap">
+    select class_id,class_name
+    from class
+   </select>
+   <!-- 建议使用结果集方式 -->
+   <resultMap type="com.shxt.model.Clazz" id="ClazzResultMap01" extends="BaseResultMap">
+    <collection property="studentList" ofType="com.shxt.model.Student">
+        <id property="student_id" column="student_id"/>
+        <result property="student_name" column="student_name"/>
+    </collection>
+   </resultMap>
+   <select id="loadResutMap01" parameterType="int" resultMap="ClazzResultMap01">
+   select c.class_id,c.class_name,s.student_id,s.student_name
+   from class c
+   left join
+   student s
+   on c.class_id=s.fk_class_id
+   where class_id=#{class_id}
+   </select>
+   
+   <resultMap type="com.shxt.model.Clazz" id="ClazzResultMap02" extends="BaseResultMap">
+    <collection property="studentList" ofType="com.shxt.model.Student"
+    resultMap="com.shxt.mapper.StudentMapper.BaseResultMap"
+    />
+      
+   </resultMap>
+   
+    <select id="loadResutMap02" parameterType="int" resultMap="ClazzResultMap02">
+   select c.class_id,c.class_name,s.student_id id,s.student_name
+   from class c
+   left join
+   student s
+   on c.class_id=s.fk_class_id
+   where class_id=#{class_id}
+   </select>
+    
+    
+  
+</mapper>

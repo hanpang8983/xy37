@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.mapper.StudentMapper">
+    <!-- 基础映射只是映射表中的字段 -->
+    <resultMap type="com.shxt.model.Student" id="BaseResultMap">
+        <id property="student_id" column="student_id" />
+        <result property="student_name" column="student_name" />
+        <result property="fk_class_id" column="fk_class_id" />
+    </resultMap>
+
+    
+   
+   <select id="listStudentByClassId" parameterType="int" resultMap="BaseResultMap">
+    select student_id,student_name,fk_class_id
+    from student
+    where fk_class_id=#{class_id}
+   </select>
+   
+   <resultMap type="com.shxt.model.Student" id="StudentResultMap" extends="BaseResultMap">
+    <collection property="courseList" ofType="com.shxt.model.Course"
+    resultMap="com.shxt.mapper.CourseMapper.BaseResultMap"
+    />
+   </resultMap>
+   
+   <select id="loadStudentAndCourses" parameterType="int" resultMap="StudentResultMap">
+   select s.student_id,s.student_name,c.course_id,c.course_name from student s
+    LEFT JOIN student_link_course slc on s.student_id=slc.fk_student_id
+    LEFT JOIN course c on slc.fk_course_id=c.course_id
+    where s.student_id=#{student_id}
+   </select>
+   
+
+</mapper>
